@@ -2,7 +2,7 @@ import {Component} from 'react'
 
 import {v4 as uuidv4} from 'uuid'
 
-import commentItem from '../CommentItem'
+import CommentFile from '../CommentItem'
 
 import './index.css'
 
@@ -17,6 +17,14 @@ const initialContainerBackgroundClassNames = [
 ]
 
 // Write your code here
+
+const userList = [
+  {
+    id: uuidv4(),
+    name: 'Rahul',
+    comment: 'jfdkljakjfksflkdjklkfdsklk',
+  },
+]
 
 class Comments extends Component {
   state = {
@@ -36,25 +44,46 @@ class Comments extends Component {
   onAddComment = event => {
     event.preventDefault()
 
-    const {inputName, inputComment, intialList} = this.state
+    const {inputName, inputComment} = this.state
 
     const name = inputName
     const comment = inputComment
 
-    const user = {
+    const newUser = {
       id: uuidv4,
       name,
       comment,
+      isFavorite: false,
     }
 
     this.setState(prevState => ({
-      intialList: [...intialList, user],
+      intialList: [...prevState.intialList, newUser],
+      inputName: '',
+      inputComment: '',
+    }))
+  }
+
+  onClickLikeBtn = id => {
+    this.setState(prevState => ({
+      intialList: prevState.intialList.map(eachCart => {
+        if (id === eachCart.id) {
+          return {...eachCart, isFavorite: !eachCart.isFavorite}
+        }
+        return eachCart
+      }),
+    }))
+  }
+
+  onDeleteComment = id => {
+    this.setState(prevState => ({
+      intialList: prevState.intialList.filter(
+        eachComment => id !== eachComment.id,
+      ),
     }))
   }
 
   render() {
-    const {intialList} = this.state
-    console.log(intialList[0])
+    const {inputName, inputComment, intialList} = this.state
 
     return (
       <div className="bg-container">
@@ -68,7 +97,7 @@ class Comments extends Component {
               <input
                 placeholder="Your Name"
                 className="name-input"
-                type="text"
+                value={inputName}
                 onChange={this.onChangeName}
               />
               <textarea
@@ -77,6 +106,7 @@ class Comments extends Component {
                 placeholder="Your Comment"
                 cols="50"
                 rows="10"
+                value={inputComment}
               >
                 Your Comment
               </textarea>
@@ -95,6 +125,14 @@ class Comments extends Component {
         <p className="comment-count-para">
           <span className="comment-count">0</span> Comments
         </p>
+        {intialList.map(eachUser => (
+          <CommentFile
+            eachUser={eachUser}
+            key={eachUser.id}
+            onClickLikeBtn={this.onClickLikeBtn}
+            onDeleteComment={this.onDeleteComment}
+          />
+        ))}
       </div>
     )
   }
