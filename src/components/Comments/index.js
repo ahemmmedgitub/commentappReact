@@ -18,19 +18,12 @@ const initialContainerBackgroundClassNames = [
 
 // Write your code here
 
-const userList = [
-  {
-    id: uuidv4(),
-    name: 'Rahul',
-    comment: 'jfdkljakjfksflkdjklkfdsklk',
-  },
-]
-
 class Comments extends Component {
   state = {
     intialList: [],
     inputName: '',
     inputComment: '',
+    count: 0,
   }
 
   onChangeName = event => {
@@ -49,15 +42,25 @@ class Comments extends Component {
     const name = inputName
     const comment = inputComment
 
+    const randomColor =
+      initialContainerBackgroundClassNames[
+        Math.ceil(
+          Math.random() * initialContainerBackgroundClassNames.length - 1,
+        )
+      ]
+    console.log(randomColor)
     const newUser = {
-      id: uuidv4,
+      id: uuidv4(),
       name,
       comment,
       isFavorite: false,
+      date: new Date(),
+      backGroundColor: randomColor,
     }
 
     this.setState(prevState => ({
       intialList: [...prevState.intialList, newUser],
+      count: prevState.count + 1,
       inputName: '',
       inputComment: '',
     }))
@@ -80,10 +83,12 @@ class Comments extends Component {
         eachComment => id !== eachComment.id,
       ),
     }))
+
+    this.setState(prevState => ({count: prevState.count - 1}))
   }
 
   render() {
-    const {inputName, inputComment, intialList} = this.state
+    const {inputName, inputComment, intialList, count} = this.state
 
     return (
       <div className="bg-container">
@@ -123,16 +128,18 @@ class Comments extends Component {
         </div>
         <hr className="separator" />
         <p className="comment-count-para">
-          <span className="comment-count">0</span> Comments
+          <span className="comment-count">{count}</span> Comments
         </p>
-        {intialList.map(eachUser => (
-          <CommentFile
-            eachUser={eachUser}
-            key={eachUser.id}
-            onClickLikeBtn={this.onClickLikeBtn}
-            onDeleteComment={this.onDeleteComment}
-          />
-        ))}
+        <ul className="ul-elements">
+          {intialList.map(eachUser => (
+            <CommentFile
+              eachUser={eachUser}
+              key={eachUser.id}
+              onClickLikeBtn={this.onClickLikeBtn}
+              onDeleteComment={this.onDeleteComment}
+            />
+          ))}
+        </ul>
       </div>
     )
   }

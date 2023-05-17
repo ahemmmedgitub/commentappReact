@@ -1,15 +1,17 @@
 // Write your code here
+import {formatDistanceToNow} from 'date-fns'
+
 import './index.css'
 
 const CommentFile = props => {
   const {eachUser, onClickLikeBtn, onDeleteComment} = props
-  const {id, name, comment, isFavorite} = eachUser
-
-  console.log(id)
+  const {id, name, comment, isFavorite, date, backGroundColor} = eachUser
 
   const likeOrLikedImg = isFavorite
     ? 'https://assets.ccbp.in/frontend/react-js/comments-app/liked-img.png'
     : 'https://assets.ccbp.in/frontend/react-js/comments-app/like-img.png'
+
+  const convertedDate = formatDistanceToNow(date)
 
   const likeClassName = isFavorite ? 'blue' : ''
 
@@ -24,31 +26,46 @@ const CommentFile = props => {
   }
 
   return (
-    <div className="user-comment-container">
-      <h1 className="commenter-name">
-        <span className="first-letter">{firstLetter}</span>
-        {name}
-      </h1>
+    <li className="user-comment-container">
+      <div className="name-time-container">
+        <h1 className="commenter-name">
+          <span className={`first-letter ${backGroundColor}`}>
+            {firstLetter}
+          </span>
+          {name}
+        </h1>
+        <p className="time">{convertedDate}</p>
+      </div>
       <p className="comment">{comment}</p>
       <div className="like-delete-container">
         <div className="like-logo-container">
           <img
             src={likeOrLikedImg}
             alt="like"
-            className="like-btn"
-            onClick={clickLikeBtn}
+            className={`like-btn ${likeClassName}`}
           />
-          <p className={`like ${likeClassName}`}>Like</p>
+          <button
+            onClick={clickLikeBtn}
+            type="button"
+            className={`like ${likeClassName}`}
+          >
+            Like
+          </button>
         </div>
-        <img
-          src="https://assets.ccbp.in/frontend/react-js/comments-app/delete-img.png"
-          alt="delete"
-          className="delete-btn"
+        <button
+          type="button"
           onClick={onDelteCmt}
-        />
+          className="delete-btn"
+          data-testid="delete"
+        >
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/comments-app/delete-img.png"
+            alt="delete"
+          />
+        </button>
       </div>
       <hr className="separator" />
-    </div>
+    </li>
   )
 }
 export default CommentFile

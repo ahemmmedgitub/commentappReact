@@ -94,3 +94,8 @@
   font-family: 'Roboto';
   color: #334155;
 }
+.ul-elements {
+  margin-left: 0px;
+  display: flex;
+  flex-direction: column;
+}
